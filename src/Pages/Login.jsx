@@ -1,22 +1,74 @@
-import React from 'react';
-import './Login.css';
-export const Login = () => {
+import React, { useState } from "react";
+import "./Login.css";
+
+const backend_url = "https://tribaloobackend.onrender.com";
+
+const Login = () => {
+  const [formData, setFormData] = useState({ email: "", password: "" });
+
+  const changeHandler = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const login = async () => {
+    try {
+      const resp = await fetch(`${backend_url}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+      const data = await resp.json();
+      if (data.success) {
+        localStorage.setItem("auth-token", data.token);
+        window.location.replace("/");
+      } else {
+        alert(data.errors || "Login failed");
+      }
+    } catch (error) {
+      alert("Something went wrong: " + error.message);
+    }
+  };
+
   return (
     <div className="loginsignup">
       <div className="loginsignup-container">
-        <h1>Sign Up</h1>
+        <h1>Login</h1>
         <div className="loginsignup-fields">
-          <input type="text" placeholder="Your Name" />
-          <input type="email" placeholder="Email Address" />
-          <input type="password" placeholder="Password" />
+          <input
+            type="email"
+            placeholder="Email Address"
+            name="email"
+            value={formData.email}
+            onChange={changeHandler}
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            name="password"
+            value={formData.password}
+            onChange={changeHandler}
+          />
         </div>
-        <button>Continue</button>
-        <p className="loginsignup-login">Already have an account? <span className='here'>Login here</span></p>
+        <button onClick={login}>Continue</button>
+        <p className="loginsignup-login">
+          Don't have an account?{" "}
+          <span
+            className="here"
+            onClick={() => (window.location.href = "/signup")}
+            style={{ cursor: "pointer", color: "blue" }}
+          >
+            Sign up here
+          </span>
+        </p>
         <div className="loginsignup-agree">
-          <input type="checkbox" name='' id=''  />
-          <p>By continuing, I agree to the terms of use & privacy policy.</p>
+          <input type="checkbox" id="agree" />
+          <label htmlFor="agree">By continuing, I agree to the terms of use & privacy policy.</label>
         </div>
       </div>
     </div>
   );
 };
+
+export default Login;
