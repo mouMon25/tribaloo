@@ -1,12 +1,10 @@
 import React from 'react'
 import './Item.css'
 import { Link } from 'react-router-dom'
-<<<<<<< HEAD
+
 import { backend_url, currency } from '../../App.jsx';
 
-=======
-import { backend_url, currency } from "../../App/App.jsx"
->>>>>>> e5c50fd (Fix all App imports to use App.jsx extension)
+
 
 const Item = (props) => {
   return (
