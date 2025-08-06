@@ -1,7 +1,8 @@
 import React from 'react'
 import './Item.css'
 import { Link } from 'react-router-dom'
-import { backend_url, currency } from '../../App'
+import { backend_url, currency } from '../../App.jsx';
+
 
 const Item = (props) => {
   return (
