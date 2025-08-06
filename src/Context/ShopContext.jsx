@@ -1,103 +1,109 @@
 import React, { createContext, useEffect, useState } from "react";
-import { backend_url } from "../App";
 
 export const ShopContext = createContext(null);
 
 const ShopContextProvider = (props) => {
-
   const [products, setProducts] = useState([]);
-
-  const getDefaultCart = () => {
-    let cart = {};
-    for (let i = 0; i < 300; i++) {
-      cart[i] = 0;
-    }
-    return cart;
-  };
-
-  const [cartItems, setCartItems] = useState(getDefaultCart());
+  const [cartItems, setCartItems] = useState({});
 
   useEffect(() => {
-    fetch(`${backend_url}/allproducts`)
-      .then((res) => res.json())
-      .then((data) => setProducts(data))
+    fetchProducts();
+    if (localStorage.getItem('auth-token')) {
+      fetchCart();
+    }
+  }, []);
 
-    if (localStorage.getItem("auth-token")) {
-      fetch(`${backend_url}/getcart`, {
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch('https://tribaloobackend.onrender.com/allproducts');
+      const data = await response.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error fetching products:", error);
+    }
+  };
+
+  const fetchCart = async () => {
+    try {
+      const response = await fetch('https://tribaloobackend.onrender.com/getcart', {
         method: 'POST',
         headers: {
-          Accept: 'application/form-data',
-          'auth-token': `${localStorage.getItem("auth-token")}`,
+          'auth-token': localStorage.getItem('auth-token'),
+          'Content-Type': 'application/json',
+        }
+      });
+      const data = await response.json();
+      setCartItems(data || {});
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+    }
+  };
+
+  const addToCart = async (itemId) => {
+    if (!localStorage.getItem('auth-token')) {
+      alert("Please login to add items to cart");
+      return;
+    }
+
+    const newCartItems = { ...cartItems };
+    newCartItems[itemId] = (newCartItems[itemId] || 0) + 1;
+    setCartItems(newCartItems);
+
+    try {
+      await fetch('https://tribaloobackend.onrender.com/addtocart', {
+        method: 'POST',
+        headers: {
+          'auth-token': localStorage.getItem('auth-token'),
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(),
-      })
-        .then((resp) => resp.json())
-        .then((data) => { setCartItems(data) });
+        body: JSON.stringify({ itemId })
+      });
+    } catch (error) {
+      console.error("Error updating cart:", error);
     }
-  }, [])
+  };
 
-  const getTotalCartAmount = () => {
-    let totalAmount = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        try {
-          let itemInfo = products.find((product) => product.id === Number(item));
-          totalAmount += cartItems[item] * itemInfo.new_price;
-        } catch (error) {}
+  const removeFromCart = async (itemId) => {
+    const newCartItems = { ...cartItems };
+    if (newCartItems[itemId] > 0) {
+      newCartItems[itemId] -= 1;
+      setCartItems(newCartItems);
+
+      try {
+        await fetch('https://tribaloobackend.onrender.com/removefromcart', {
+          method: 'POST',
+          headers: {
+            'auth-token': localStorage.getItem('auth-token'),
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ itemId })
+        });
+      } catch (error) {
+        console.error("Error updating cart:", error);
       }
     }
-    return totalAmount;
+  };
+
+  const getTotalCartAmount = () => {
+    return Object.keys(cartItems).reduce((total, itemId) => {
+      const item = products.find(product => product.id === Number(itemId));
+      return total + (item?.new_price || 0) * (cartItems[itemId] || 0);
+    }, 0);
   };
 
   const getTotalCartItems = () => {
-    let totalItem = 0;
-    for (const item in cartItems) {
-      if (cartItems[item] > 0) {
-        try {
-          let itemInfo = products.find((product) => product.id === Number(item));
-          totalItem += itemInfo ? cartItems[item] : 0 ;
-        } catch (error) {}
-      }
-    }
-    return totalItem;
+    return Object.values(cartItems).reduce((total, quantity) => total + quantity, 0);
   };
 
-  const addToCart = (itemId) => {
-    if (!localStorage.getItem("auth-token")) {
-      alert("Please Login");
-      return;
-    }
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] + 1 }));
-    if (localStorage.getItem("auth-token")) {
-      fetch(`${backend_url}/addtocart`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/form-data',
-          'auth-token': `${localStorage.getItem("auth-token")}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ "itemId": itemId }),
-      })
-    }
+  const contextValue = {
+    products,
+    cartItems,
+    addToCart,
+    removeFromCart,
+    getTotalCartAmount,
+    getTotalCartItems
   };
 
-  const removeFromCart = (itemId) => {
-    setCartItems((prev) => ({ ...prev, [itemId]: prev[itemId] - 1 }));
-    if (localStorage.getItem("auth-token")) {
-      fetch(`${backend_url}/removefromcart`, {
-        method: 'POST',
-        headers: {
-          Accept: 'application/form-data',
-          'auth-token': `${localStorage.getItem("auth-token")}`,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ "itemId": itemId }),
-      })
-    }
-  };
-
-  const contextValue = { products, getTotalCartItems, cartItems, addToCart, removeFromCart, getTotalCartAmount };
   return (
     <ShopContext.Provider value={contextValue}>
       {props.children}

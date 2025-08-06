@@ -12,12 +12,12 @@ const Shop = () => {
   useEffect(() => {
     const fetchInfo = async () => {
       try {
-        const res = await fetch('https://tribaloo-backend.onrender.com/allproducts');
+        const res = await fetch('https://tribaloobackend.onrender.com/allproducts');
         const data = await res.json();
         const filteredDelights = data.filter(item => item.category === 'delights');
         setPopular(filteredDelights);
 
-        const res2 = await fetch('https://tribaloo-backend.onrender.com/newcollections');
+        const res2 = await fetch('https://tribaloobackend.onrender.com/newcollections');
         const data2 = await res2.json();
         setNewCollection(data2);
       } catch (err) {

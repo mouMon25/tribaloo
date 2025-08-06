@@ -1,6 +1,5 @@
 import React from "react";
-import { HashRouter as Router, Routes, Route } from "react-router-dom";
-
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
 import Navbar from "./Components/Navbar/Navbar";
 import Footer from "./Components/Footer/Footer";
@@ -14,7 +13,7 @@ import women_banner from "./Components/Assets/banner_women.jpg";
 import men_banner from "./Components/Assets/banner_mens.jpg";
 import kid_banner from "./Components/Assets/banner_kids.jpg";
 
-export const backend_url = 'https://tribaloo-backend.onrender.com';
+const backend_url = 'https://tribaloobackend.onrender.com/';
 export const currency = '₹';
 
 function App() {

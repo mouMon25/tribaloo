@@ -10,27 +10,26 @@ const Login = () => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const login = async () => {
-    try {
-      const resp = await fetch(`${backend_url}/login`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-      const data = await resp.json();
-      if (data.success) {
-        localStorage.setItem("auth-token", data.token);
-        window.location.replace("/");
-      } else {
-        alert(data.errors || "Login failed");
-      }
-    } catch (error) {
-      alert("Something went wrong: " + error.message);
+  // Replace your login function with this:
+const login = async () => {
+  try {
+    const response = await fetch('https://tribaloobackend.onrender.com/login', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData)
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      localStorage.setItem('auth-token', data.token);
+      window.location.replace("/");
+    } else {
+      alert(data.errors || "Login failed");
     }
-  };
-
+  } catch (error) {
+    alert("Network error. Please try again.");
+  }
+};
   return (
     <div className="loginsignup">
       <div className="loginsignup-container">
