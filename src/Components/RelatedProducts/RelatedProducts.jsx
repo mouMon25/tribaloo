@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import './RelatedProducts.css'
 import Item from '../Item/Item'
-import { backend_url } from "../../App/App.jsx";
+import { backend_url} from '../../App.jsx';
 
 const RelatedProducts = ({category,id}) => {
 
