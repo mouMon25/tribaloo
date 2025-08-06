@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import './RelatedProducts.css'
 import Item from '../Item/Item'
-<<<<<<< HEAD
-import { backend_url} from '../../App.jsx';
-=======
-import { backend_url} from "../../App.jsx";
 
->>>>>>> b04213c (Setup GitHub Pages deployment)
+import { backend_url} from '../../App.jsx';
+
+
+
 
 const RelatedProducts = ({category,id}) => {
 
