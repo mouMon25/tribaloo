@@ -18,7 +18,7 @@ const LoginSignup = () => {
     const endpoint = state === "Login" ? "login" : "signup";
     
     try {
-      const response = await fetch(`https://tribaloobackend.onrender.com/${endpoint}`, {
+      const response = await fetch(`https://tribaloobackend.onrender.com${endpoint}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
