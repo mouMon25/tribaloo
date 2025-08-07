@@ -14,7 +14,7 @@ import women_banner from "./Components/Assets/banner_women.jpg";
 import men_banner from "./Components/Assets/banner_mens.jpg";
 import kid_banner from "./Components/Assets/banner_kids.jpg";
 
-export const backend_url = 'https://tribaloobackend.onrender.com/';
+export const backend_url = 'https://tribaloobackend.onrender.com';
 export const currency = '₹';
 
 
