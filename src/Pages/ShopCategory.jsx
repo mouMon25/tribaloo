@@ -8,7 +8,7 @@ const ShopCategory = (props) => {
   const [allproducts, setAllProducts] = useState([]);
 
   const fetchInfo = () => {
-    fetch("https://tribaloobackend.onrender.com//allproducts")
+    fetch("https://tribaloobackend.onrender.com/allproducts")
       .then((res) => res.json())
       .then((data) => setAllProducts(data));
   };
