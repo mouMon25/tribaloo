@@ -22,7 +22,7 @@ const login = async () => {
     const data = await response.json();
     if (data.success) {
       localStorage.setItem('auth-token', data.token);
-      window.location.replace("/");
+      window.location.replace("/tribaloo/");
     } else {
       alert(data.errors || "Login failed");
     }
