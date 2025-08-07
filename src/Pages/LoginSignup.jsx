@@ -29,7 +29,7 @@ const LoginSignup = () => {
 
       if (data.success) {
         localStorage.setItem('auth-token', data.token);
-        window.location.replace("/");
+        window.location.replace("/tribaloo/");
       } else {
         alert(data.error || "Authentication failed");
       }
